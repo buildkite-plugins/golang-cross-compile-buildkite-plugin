@@ -1,0 +1,50 @@
+#!/bin/bash
+set -euo pipefail
+
+go_build_in_docker() {
+  go_version="$1"
+  pkg="$2"
+  goos="$2"
+  goarch="$3"
+
+  docker run \
+    -v "${PWD}:/go/src/${pkg}" \
+    -w "/go/src/${pkg}" \
+    -e "GOOS=${goos}" -e "GOARCH=${goarch}" -e "CGO_ENABLED=0" \
+    --rm "golang:${go_version}" \
+    go build "$@"
+}
+
+debug_mode='off'
+if [[ "${BUILDKITE_PLUGIN_GOLANG_BUILD_DEBUG:-false}" =~ (true|on|1) ]] ; then
+  echo "--- :hammer: Enabling debug mode"
+  debug_mode='on'
+  set -x
+fi
+
+# Parse targets
+while IFS='=' read -r name _ ; do
+  if [[ $name =~ ^(BUILDKITE_PLUGIN_GOLANG_BUILD_TARGETS(_[0-9]+)?) ]] ; then
+    echo "parsed env[$name] = [${!name}]"
+  fi
+done < <(env | sort)
+
+
+
+
+# go_version="${BUILDKITE_PLUGIN_GOLANG_BUILD_VERSION:-latest}"
+# build_file=""
+
+# rm -rf build/
+# mkdir -p build/
+
+# echo "+++ Building github-release for $GOOS/$GOARCH with golang:${go_version} :golang:"
+
+# go_build_in_docker
+#  -a -tags netgo -ldflags '-w' -o "${DISTFILE}" main.go
+# file "${DISTFILE}"
+
+# chmod +x "${DISTFILE}"
+# echo "👍 ${DISTFILE}"
+
+# buildkite-agent artifact upload "${DISTFILE}"
