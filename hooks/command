@@ -20,17 +20,9 @@ debug_mode='off'
 if [[ "${BUILDKITE_PLUGIN_GOLANG_BUILD_DEBUG:-false}" =~ (true|on|1) ]] ; then
   echo "--- :hammer: Enabling debug mode"
   debug_mode='on'
-  set -x
   env | sort | grep BUILDKITE_PLUGIN_GOLANG_BUILD
+  set -x
 fi
-
-# # Parse targets
-# while IFS='=' read -r name _ ; do
-#   if [[ $name =~ ^(BUILDKITE_PLUGIN_GOLANG_BUILD_TARGETS(_[0-9]+)?) ]] ; then
-#     echo "parsed env[$name] = [${!name}]"
-#   fi
-# done < <(env | sort)
-
 
 goos="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_OS:-linux}"
 goarch="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_ARCH:-amd64}"
@@ -53,4 +45,5 @@ go_args+=($source_files)
 echo "+++ Building github-release for $goos/$goarch with golang:${go_version} :golang:"
 go_build_in_docker "$go_version" "$pkg" "$goos" "$goarch" "${go_args[@]}"
 
+echo "~~~ Uploading artifacts"
 buildkite-agent artifact upload "${build_file}"
