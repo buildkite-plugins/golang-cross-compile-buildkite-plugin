@@ -1,11 +1,12 @@
 #!/bin/bash
-set -euo pipefail
+set -euxo pipefail
 
 go_build_in_docker() {
   go_version="$1"
   pkg="$2"
   goos="$3"
   goarch="$4"
+  shift 4
 
   docker run \
     -v "${PWD}:/go/src/${pkg}" \
@@ -30,9 +31,9 @@ fi
 # done < <(env | sort)
 
 
-goos="${GOOS:-linux}"
-goarch="${GOARCH:-amd64}"
-go_version="${BUILDKITE_PLUGIN_GOLANG_BUILD_VERSION:-latest}"
+goos="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_OS:-linux}"
+goarch="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_ARCH:-amd64}"
+go_version="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_VERSION:-latest}"
 build_file="${BUILDKITE_PLUGIN_GOLANG_BUILD_BUILD:-main.go}"
 pkg="$BUILDKITE_PLUGIN_GOLANG_BUILD_PACKAGE"
 
