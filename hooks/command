@@ -4,8 +4,8 @@ set -euo pipefail
 go_build_in_docker() {
   go_version="$1"
   pkg="$2"
-  goos="$2"
-  goarch="$3"
+  goos="$3"
+  goarch="$4"
 
   docker run \
     -v "${PWD}:/go/src/${pkg}" \
@@ -22,29 +22,24 @@ if [[ "${BUILDKITE_PLUGIN_GOLANG_BUILD_DEBUG:-false}" =~ (true|on|1) ]] ; then
   set -x
 fi
 
-# Parse targets
-while IFS='=' read -r name _ ; do
-  if [[ $name =~ ^(BUILDKITE_PLUGIN_GOLANG_BUILD_TARGETS(_[0-9]+)?) ]] ; then
-    echo "parsed env[$name] = [${!name}]"
-  fi
-done < <(env | sort)
+# # Parse targets
+# while IFS='=' read -r name _ ; do
+#   if [[ $name =~ ^(BUILDKITE_PLUGIN_GOLANG_BUILD_TARGETS(_[0-9]+)?) ]] ; then
+#     echo "parsed env[$name] = [${!name}]"
+#   fi
+# done < <(env | sort)
 
 
+goos="${GOOS:-linux}"
+goarch="${GOARCH:-amd64}"
+go_version="${BUILDKITE_PLUGIN_GOLANG_BUILD_VERSION:-latest}"
+build_file="${BUILDKITE_PLUGIN_GOLANG_BUILD_BUILD:-main.go}"
+pkg="$BUILDKITE_PLUGIN_GOLANG_BUILD_PACKAGE"
 
+rm -rf build/
+mkdir -p build/
 
-# go_version="${BUILDKITE_PLUGIN_GOLANG_BUILD_VERSION:-latest}"
-# build_file=""
-
-# rm -rf build/
-# mkdir -p build/
-
-# echo "+++ Building github-release for $GOOS/$GOARCH with golang:${go_version} :golang:"
-
-# go_build_in_docker
-#  -a -tags netgo -ldflags '-w' -o "${DISTFILE}" main.go
-# file "${DISTFILE}"
-
-# chmod +x "${DISTFILE}"
-# echo "👍 ${DISTFILE}"
+echo "+++ Building github-release for $goos/$goarch with golang:${go_version} :golang:"
+go_build_in_docker "$go_version" "$pkg" "$goos" "$goarch" "$build_file"
 
 # buildkite-agent artifact upload "${DISTFILE}"

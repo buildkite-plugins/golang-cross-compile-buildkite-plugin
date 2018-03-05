@@ -14,10 +14,7 @@ steps:
       golang-build#v1.0.0:
         build: main.go
         package: github.com/buildkite/github-release
-        targets:
-         - version: 1.10.0
-           goos: linux
-           goarch: amd64
+        version: 1.10.0
 ```
 
 ## License
