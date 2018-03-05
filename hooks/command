@@ -35,13 +35,22 @@ fi
 goos="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_OS:-linux}"
 goarch="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_ARCH:-amd64}"
 go_version="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_VERSION:-latest}"
-build_file="${BUILDKITE_PLUGIN_GOLANG_BUILD_BUILD:-main.go}"
+source_files="${BUILDKITE_PLUGIN_GOLANG_BUILD_BUILD:-main.go}"
 pkg="$BUILDKITE_PLUGIN_GOLANG_BUILD_PACKAGE"
+build_file="build/$(basename "$pkg")_${goos}_${goarch}"
 
 rm -rf build/
 mkdir -p build/
 
-echo "+++ Building github-release for $goos/$goarch with golang:${go_version} :golang:"
-go_build_in_docker "$go_version" "$pkg" "$goos" "$goarch" $build_file
+go_args=("-o" "$build_file")
 
-# buildkite-agent artifact upload "${DISTFILE}"
+if [[ "${debug_mode:-off}" == "on" ]] ; then
+  go_args+=("-v")
+fi
+
+go_args+=($source_files)
+
+echo "+++ Building github-release for $goos/$goarch with golang:${go_version} :golang:"
+go_build_in_docker "$go_version" "$pkg" "$goos" "$goarch" "${go_args[@]}"
+
+buildkite-agent artifact upload "${build_file}"
