@@ -42,4 +42,10 @@ echo "+++ Building ${pkg_basename} for ${goos}/${goarch} with golang:${go_versio
 go_build_in_docker "$go_version" "$pkg" "$goos" "$goarch" "${go_args[@]}"
 
 echo "~~~ Uploading artifacts"
-buildkite-agent artifact upload "${build_file}"
+
+if [[ "${debug_mode:-off}" == "on" ]] ; then
+  env | grep BUILDKITE_ARTIFACT_UPLOAD_DESTINATION
+  buildkite-agent artifact upload --debug "${build_file}"
+else
+  buildkite-agent artifact upload "${build_file}"
+fi
