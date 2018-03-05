@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euxo pipefail
+set -euo pipefail
 
 go_build_in_docker() {
   go_version="$1"
@@ -21,6 +21,7 @@ if [[ "${BUILDKITE_PLUGIN_GOLANG_BUILD_DEBUG:-false}" =~ (true|on|1) ]] ; then
   echo "--- :hammer: Enabling debug mode"
   debug_mode='on'
   set -x
+  env | sort | grep BUILDKITE_PLUGIN_GOLANG_BUILD
 fi
 
 # # Parse targets
