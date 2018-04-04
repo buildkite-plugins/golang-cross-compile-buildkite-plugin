@@ -1,12 +1,10 @@
-# Golang Buildkite Plugin
+# Golang Buildkite Plugin (Alpha)
 
-A [Buildkite](https://buildkite.com/) plugin for building golang binaries against different versions of golang.
-
-**This is in the process of being developed and is not ready for use yet!**
+A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) for building golang binaries against different versions of golang.
 
 ## Example
 
-Build a golang binary with a specific golang version
+Build a golang binary with a specific golang version:
 
 ```yml
 steps:
