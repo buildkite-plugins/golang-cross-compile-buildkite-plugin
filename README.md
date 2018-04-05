@@ -4,17 +4,27 @@ A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) for building g
 
 ## Example
 
-Build a golang binary with a specific golang version:
+Build two golang binaries in parallel:
 
 ```yml
 steps:
-  - plugins:
+  - label: ":linux: amd64"
+    plugins:
       golang-build#v1.0.0:
         build: main.go
         package: github.com/buildkite/github-release
         golang:
           version: 1.10.0
           os: linux
+          arch: amd64
+  - label: ":mac: 386"
+    plugins:
+      golang-build#v1.0.0:
+        build: main.go
+        package: github.com/buildkite/github-release
+        golang:
+          version: 1.10.0
+          os: darwin
           arch: amd64
 ```
 
