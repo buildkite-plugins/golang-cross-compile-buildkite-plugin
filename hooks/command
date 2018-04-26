@@ -16,10 +16,8 @@ go_build_in_docker() {
     go build "$@"
 }
 
-debug_mode='off'
 if [[ "${BUILDKITE_PLUGIN_GOLANG_BUILD_DEBUG:-false}" =~ (true|on|1) ]] ; then
   echo "--- :hammer: Enabling debug mode"
-  debug_mode='on'
   env | sort | grep BUILDKITE_PLUGIN_GOLANG_BUILD
   set -x
 fi

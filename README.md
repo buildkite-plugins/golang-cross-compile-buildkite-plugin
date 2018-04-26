@@ -10,7 +10,7 @@ Build two golang binaries in parallel:
 steps:
   - label: ":linux: amd64"
     plugins:
-      golang-build#v1.0.0:
+      golang-build#v0.0.1:
         build: main.go
         package: github.com/buildkite/github-release
         golang:
@@ -19,7 +19,7 @@ steps:
           arch: amd64
   - label: ":mac: 386"
     plugins:
-      golang-build#v1.0.0:
+      golang-build#v0.0.1:
         build: main.go
         package: github.com/buildkite/github-release
         golang:
