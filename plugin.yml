@@ -1,0 +1,26 @@
+name: golang-build
+description: building golang binaries against different versions of golang
+author: https://github.com/buildkite
+requirements:
+  - docker
+configuration:
+  properties:
+    build:
+      type: string
+    package:
+      type: string
+    golang:
+      type: object
+      properties:
+        version:
+          type: string
+        os:
+          type: string
+        arch:
+          type: string
+      required:
+        - version
+        - os
+        - arch
+  required: []
+  additionalProperties: false
