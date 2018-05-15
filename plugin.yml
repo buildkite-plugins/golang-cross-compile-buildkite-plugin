@@ -1,5 +1,5 @@
-name: golang-build
-description: building golang binaries against different versions of golang
+name: Golang Build
+description: Building golang binaries against different versions of golang
 author: https://github.com/buildkite
 requirements:
   - docker
