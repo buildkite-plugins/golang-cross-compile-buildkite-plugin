@@ -12,5 +12,5 @@ steps:
 
   - label: ":sparkles: Linter"
     plugins:
-      plugin-linter#v1.0.0:
+      plugin-linter#v2.0.0:
         name: golang-build
