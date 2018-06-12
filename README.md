@@ -1,31 +1,34 @@
+<<<<<<< HEAD
 # Golang Buildkite Plugin (Alpha)
+=======
+# Golang Build Buildkite Plugin
+>>>>>>> Update README with aspirational example
 
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) for building golang binaries against different versions of golang.
 
 ## Example
 
-Build two golang binaries in parallel:
+Build a golang binary with a variety of targets. This makes use of golang's native cross-compile facilities.
 
 ```yml
 steps:
-  - label: ":linux: amd64"
-    plugins:
-      golang-build#v0.0.1:
-        build: main.go
-        package: github.com/buildkite/github-release
-        golang:
-          version: 1.10.0
-          os: linux
-          arch: amd64
-  - label: ":mac: 386"
-    plugins:
-      golang-build#v0.0.1:
-        build: main.go
-        package: github.com/buildkite/github-release
-        golang:
-          version: 1.10.0
-          os: darwin
-          arch: amd64
+  - plugins:
+      - golang-build#v1.0.0:
+          build: main.go
+          package: github.com/buildkite/github-release
+          vars:
+            "main.Version": "${BUILDKITE_TAG}"
+          flags: ["-s", "-w"]
+          targets:
+            - version: 1.10.2
+              goos: linux
+              goarch: amd64
+            - version: 1.10.2
+              goos: windows
+              goarch: amd64
+            - version: 1.10.2
+              goos: darwin
+              goarch: amd64
 ```
 
 ## License
