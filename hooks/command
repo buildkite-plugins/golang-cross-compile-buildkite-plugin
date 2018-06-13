@@ -39,11 +39,11 @@ if [[ "${BUILDKITE_PLUGIN_GOLANG_BUILD_DEBUG:-false}" =~ (true|on|1) ]] ; then
   env | sort | grep BUILDKITE_PLUGIN_GOLANG_BUILD
 fi
 
-goos="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_OS:-linux}"
-goarch="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_ARCH:-amd64}"
+goos="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOOS:-linux}"
+goarch="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOARCH:-amd64}"
 go_version="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_VERSION:-latest}"
 source_files="${BUILDKITE_PLUGIN_GOLANG_BUILD_BUILD:-main.go}"
-pkg="$BUILDKITE_PLUGIN_GOLANG_BUILD_PACKAGE"
+pkg="${BUILDKITE_PLUGIN_GOLANG_BUILD_PACKAGE?}"
 
 pkg_basename=$(basename "$pkg")
 build_file="build/${pkg_basename}_${goos}_${goarch}"
@@ -51,7 +51,7 @@ build_file="build/${pkg_basename}_${goos}_${goarch}"
 rm -rf build/
 mkdir -p build/
 
-go_args=("-o" "$build_file" "-v" $source_files)
+go_args=("-o" "$build_file" "-v" "$source_files")
 
 echo "+++ Building ${pkg_basename} for ${goos}/${goarch} with golang:${go_version} :golang:"
 go_build_in_docker "$go_version" "$pkg" "$goos" "$goarch" "${go_args[@]}"

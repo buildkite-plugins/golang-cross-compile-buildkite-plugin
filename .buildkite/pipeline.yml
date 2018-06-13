@@ -2,6 +2,7 @@ steps:
   - label: run a test build
     plugins:
       ${BUILDKITE_REPO}#${BUILDKITE_COMMIT}:
+        debug: true
         build: main.go
         targets:
           - version: 1.10.2
