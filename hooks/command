@@ -42,20 +42,22 @@ fi
 goos="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOOS:-linux}"
 goarch="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOARCH:-amd64}"
 go_version="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_VERSION:-latest}"
-source_files="${BUILDKITE_PLUGIN_GOLANG_BUILD_BUILD:-main.go}"
+
+# TODO: Support a list here
+source_files=("${BUILDKITE_PLUGIN_GOLANG_BUILD_BUILD:-main.go}")
 
 default_pkg="buildkite.com/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
 pkg="${BUILDKITE_PLUGIN_GOLANG_BUILD_PACKAGE:-$default_pkg}"
 
-pkg_basename=$(basename "$pkg")
-build_file="build/${pkg_basename}_${goos}_${goarch}"
+output_name=$(cd "$(dirname "${source_files[0]}")"; pwd)
+build_file="build/${output_name}_${goos}_${goarch}"
+
+go_args=("-o" "$build_file" "-v" "${source_files[@]}")
 
 rm -rf build/
 mkdir -p build/
 
-go_args=("-o" "$build_file" "-v" "$source_files")
-
-echo "+++ Building ${pkg_basename} for ${goos}/${goarch} with golang:${go_version} :golang:"
+echo "+++ Building ${output_name} for ${goos}/${goarch} with golang:${go_version} :golang:"
 go_build_in_docker "$go_version" "$pkg" "$goos" "$goarch" "${go_args[@]}"
 
 echo "~~~ Uploading artifacts"
