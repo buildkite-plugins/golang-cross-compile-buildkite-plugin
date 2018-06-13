@@ -49,7 +49,7 @@ source_files=("${BUILDKITE_PLUGIN_GOLANG_BUILD_BUILD:-main.go}")
 default_pkg="buildkite.com/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
 pkg="${BUILDKITE_PLUGIN_GOLANG_BUILD_PACKAGE:-$default_pkg}"
 
-output_name=$(cd "$(dirname "${source_files[0]}")"; pwd)
+output_name=$(dirname "$(cd "$(dirname "${source_files[0]}")"; pwd)")
 build_file="build/${output_name}_${goos}_${goarch}"
 
 go_args=("-o" "$build_file" "-v" "${source_files[@]}")
