@@ -23,7 +23,7 @@ build_step() {
   - name: ":go: ${label}"
     plugins:
       - golang-build#master:
-          build: main.go
+          build: ./tests/main.go
           package: github.com/buildkite/github-release
           vars:
             "main.Version": "${BUILDKITE_TAG}"
@@ -38,7 +38,6 @@ if [[ "${BUILDKITE_PLUGIN_GOLANG_BUILD_DEBUG:-false}" =~ (true|on|1) ]] ; then
   echo "--- :hammer: Enabling debug mode"
   env | sort | grep BUILDKITE_PLUGIN_GOLANG_BUILD
 fi
-
 
 goos="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOOS:-linux}"
 goarch="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOARCH:-amd64}"

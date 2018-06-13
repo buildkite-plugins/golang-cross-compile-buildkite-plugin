@@ -3,7 +3,7 @@ steps:
     plugins:
       ${BUILDKITE_REPO}#${BUILDKITE_COMMIT}:
         debug: true
-        build: main.go
+        build: ./tests/main.go
         targets:
           - version: 1.10.2
             goos: linux
