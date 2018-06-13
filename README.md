@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Golang Buildkite Plugin (Alpha)
-=======
 # Golang Build Buildkite Plugin
->>>>>>> Update README with aspirational example
 
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) for building golang binaries against different versions of golang.
 
