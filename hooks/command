@@ -16,10 +16,27 @@ go_build_in_docker() {
     go build "$@"
 }
 
+build_step() {
+  local label="$1"
+
+  cat <<YAML
+  - name: ":go: ${label}"
+    plugins:
+      - golang-build#master:
+          build: main.go
+          package: github.com/buildkite/github-release
+          vars:
+            "main.Version": "${BUILDKITE_TAG}"
+          flags: ["-s", "-w"]
+          version: 1.10.2
+          goos: linux
+          goarch: amd64
+YAML
+}
+
 if [[ "${BUILDKITE_PLUGIN_GOLANG_BUILD_DEBUG:-false}" =~ (true|on|1) ]] ; then
   echo "--- :hammer: Enabling debug mode"
   env | sort | grep BUILDKITE_PLUGIN_GOLANG_BUILD
-  set -x
 fi
 
 goos="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_OS:-linux}"
