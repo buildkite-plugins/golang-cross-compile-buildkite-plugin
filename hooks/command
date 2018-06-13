@@ -13,7 +13,7 @@ go_build_in_docker() {
     -w "/go/src/${pkg}" \
     -e "GOOS=${goos}" -e "GOARCH=${goarch}" -e "CGO_ENABLED=0" \
     --rm "golang:${go_version}" \
-    go build "$@"
+    go build -v "$@"
 }
 
 build_step() {
