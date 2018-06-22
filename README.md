@@ -2,9 +2,13 @@
 
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) for building golang binaries against different versions of golang.
 
+This plugin creates a step for each build target and runs them in parallel. It's ideal for build matrixes against multiple architectures, operating systems and golang versions.
+
+If you just need to build against a single target, use the simpler [golang plugin](https://github.com/buildkite-plugins/golang-buildkite-plugin).
+
 ## Example
 
-Build a golang binary with a variety of targets. This makes use of golang's native cross-compile facilities.
+Build a golang binary with a variety of targets.
 
 ```yml
 steps:
@@ -12,9 +16,6 @@ steps:
       - golang-build#v1.0.0:
           build: main.go
           package: github.com/buildkite/github-release
-          vars:
-            "main.Version": "${BUILDKITE_TAG}"
-          flags: ["-s", "-w"]
           targets:
             - version: 1.10.2
               goos: linux
@@ -26,6 +27,7 @@ steps:
               goos: darwin
               goarch: amd64
 ```
+
 
 ## License
 
