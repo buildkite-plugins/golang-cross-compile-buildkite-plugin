@@ -43,10 +43,13 @@ pipeline="$(
     target_goarch=${!target_goarch_prop:-amd64}
 
     env=("GOOS=${target_goos}" "GOARCH=${target_goarch}")
+    artifact_path="${binary_prefix}-${target_goos}-${target_goarch}"
 
     cat <<YAML
   - name: ":go: ${target_goos}/${target_goarch}"
-    command: go build -v -o '${binary_prefix}-${target_goos}-${target_goarch}' '${build}'
+    command: go build -v -o '${artifact_path}' '${build}'
+    artifact_paths:
+      - "${artifact_path}"
     plugins:
       golang#${GOLANG_PLUGIN_VERSION}:
         import: ${import}

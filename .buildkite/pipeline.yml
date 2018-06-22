@@ -16,7 +16,7 @@ steps:
         id: golang-cross-compile
 
   - wait
-  - label: run example 1
+  - label: ":pipeline: example 1"
     plugins:
       ${BUILDKITE_REPO}#${BUILDKITE_COMMIT}:
         debug: true
