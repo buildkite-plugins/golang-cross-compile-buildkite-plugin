@@ -15,7 +15,7 @@ steps:
   - plugins:
       - golang-cross-compile#v1.0.0:
           build: main.go
-          package: github.com/buildkite/github-release
+          import: github.com/buildkite/github-release
           targets:
             - version: 1.10.2
               goos: linux
