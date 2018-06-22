@@ -24,6 +24,8 @@ load '/usr/local/lib/bats/load.bash'
 steps:
   - name: ":go: linux/amd64"
     command: go build -v -o 'buildkite-agent-linux-amd64' 'main.go'
+    artifact_paths:
+      - "buildkite-agent-linux-amd64"
     plugins:
       golang#v2.0.0:
         import: buildkite.com/buildkite/agent
@@ -33,6 +35,8 @@ steps:
           - GOARCH=amd64
   - name: ":go: darwin/386"
     command: go build -v -o 'buildkite-agent-darwin-386' 'main.go'
+    artifact_paths:
+      - "buildkite-agent-darwin-386"
     plugins:
       golang#v2.0.0:
         import: buildkite.com/buildkite/agent
@@ -44,7 +48,8 @@ YAML
   )
 
   stub buildkite-agent \
-    "pipeline upload : exit 0"
+    "pipeline upload : exit 0" \
+
 
   run "$PWD/hooks/command"
 
