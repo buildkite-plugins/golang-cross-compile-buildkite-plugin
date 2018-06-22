@@ -4,14 +4,14 @@ set -euo pipefail
 readonly GOLANG_PLUGIN_VERSION="v2.0.0"
 
 is_debug() {
-  [[ "${BUILDKITE_PLUGIN_GOLANG_BUILD_DEBUG:-false}" =~ (true|on|1) ]]
+  [[ "${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_DEBUG:-false}" =~ (true|on|1) ]]
 }
 
-# Returns a list of env vars in the form of BUILDKITE_PLUGIN_GOLANG_BUILD_TARGETS_N
+# Returns a list of env vars in the form of BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_TARGETS_N
 # This is used to iterate through the targets later
 list_targets() {
   while IFS='=' read -r name _ ; do
-    if [[ $name =~ ^(BUILDKITE_PLUGIN_GOLANG_BUILD_TARGETS_[0-9]+) ]] ; then
+    if [[ $name =~ ^(BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_TARGETS_[0-9]+) ]] ; then
       echo "${BASH_REMATCH[1]}"
     fi
   done < <(env | sort) | uniq
@@ -19,14 +19,14 @@ list_targets() {
 
 if is_debug ; then
   echo "--- :hammer: Enabling debug mode"
-  env | sort | grep BUILDKITE_PLUGIN_GOLANG_BUILD
+  env | sort | grep BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE
 fi
 
 # Config that applies to all targets
 default_import="buildkite.com/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-import="${BUILDKITE_PLUGIN_GOLANG_BUILD_IMPORT:-$default_import}"
-build="${BUILDKITE_PLUGIN_GOLANG_BUILD_BUILD:-main.go}"
-binary_prefix="${BUILDKITE_PLUGIN_GOLANG_BUILD_BIN_PREFIX:-$(basename "$import")}"
+import="${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_IMPORT:-$default_import}"
+build="${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_BUILD:-main.go}"
+binary_prefix="${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_BIN_PREFIX:-$(basename "$import")}"
 
 # Generate the pipeline yaml
 pipeline="$(
