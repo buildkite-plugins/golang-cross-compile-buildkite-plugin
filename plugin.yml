@@ -7,20 +7,20 @@ configuration:
   properties:
     build:
       type: string
-    package:
+    import:
       type: string
-    golang:
-      type: object
-      properties:
-        version:
-          type: string
-        os:
-          type: string
-        arch:
-          type: string
-      required:
-        - version
-        - os
-        - arch
+    targets:
+      type: array
+      items:
+        type: object
+        properties:
+          version:
+            type: string
+          goos:
+            type: string
+          goarch:
+            type: string
+          goarm:
+            type: number
   required: []
   additionalProperties: false

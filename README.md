@@ -13,23 +13,23 @@ Build a golang binary across a set of architectures and versions.
 ```yml
 steps:
   - plugins:
-      - golang-cross-compile#v1.0.0:
-          build: main.go
-          import: github.com/buildkite/example
-          targets:
-            - version: 1.10.2
-              goos: linux
-              goarch: amd64
-            - version: 1.10.2
-              goos: android
-              goarch: arm
-              goarm: 7
-            - version: 1.10.2
-              goos: windows
-              goarch: amd64
-            - version: 1.10.2
-              goos: darwin
-              goarch: amd64
+      golang-cross-compile#v1.0.0:
+        build: main.go
+        import: github.com/buildkite/example
+        targets:
+          - version: 1.10.2
+            goos: linux
+            goarch: amd64
+          - version: 1.10.2
+            goos: android
+            goarch: arm
+            goarm: 7
+          - version: 1.10.2
+            goos: windows
+            goarch: amd64
+          - version: 1.10.2
+            goos: darwin
+            goarch: amd64
 ```
 
 ## Configuration
