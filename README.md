@@ -21,7 +21,7 @@ steps:
             goos: linux
             goarch: amd64
           - version: 1.10.2
-            goos: android
+            goos: linux
             goarch: arm
             goarm: 7
           - version: 1.10.2
