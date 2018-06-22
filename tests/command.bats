@@ -3,7 +3,7 @@
 load '/usr/local/lib/bats/load.bash'
 
 # Uncomment to enable stub debug output:
-export BUILDKITE_AGENT_STUB_DEBUG=/dev/tty
+# export BUILDKITE_AGENT_STUB_DEBUG=/dev/tty
 
 @test "Running a build against a multiple target" {
   export BUILDKITE_ORGANIZATION_SLUG="buildkite"
@@ -25,8 +25,8 @@ steps:
   - name: ":go: linux/amd64"
     command: go build -v -o 'buildkite-agent-linux-amd64' 'main.go'
     plugins:
-      golang#v1.0.0:
-        package: github.com/buildkite/agent
+      golang#v2.0.0:
+        import: buildkite.com/buildkite/agent
         version: 1.10.1
         environment:
           - GOOS=linux
@@ -34,8 +34,8 @@ steps:
   - name: ":go: darwin/386"
     command: go build -v -o 'buildkite-agent-darwin-386' 'main.go'
     plugins:
-      golang#v1.0.0:
-        package: github.com/buildkite/agent
+      golang#v2.0.0:
+        import: buildkite.com/buildkite/agent
         version: 1.10.2
         environment:
           - GOOS=darwin
@@ -43,13 +43,13 @@ steps:
 YAML
   )
 
-  # stub buildkite-agent \
-  #   "pipeline upload : exit 0"
+  stub buildkite-agent \
+    "pipeline upload : exit 0"
 
   run "$PWD/hooks/command"
 
   assert_success
   assert_output --partial "$expected_yaml"
 
-  # unstub buildkite-agent
+  unstub buildkite-agent
 }

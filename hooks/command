@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-readonly GOLANG_PLUGIN_VERSION="v1.0.0"
+readonly GOLANG_PLUGIN_VERSION="v2.0.0"
 
 is_debug() {
   [[ "${BUILDKITE_PLUGIN_GOLANG_BUILD_DEBUG:-false}" =~ (true|on|1) ]]
@@ -17,79 +17,52 @@ list_targets() {
   done < <(env | sort) | uniq
 }
 
-pipeline_upload() {
-  # if is_debug ; then
-  #   echo "--- :pipeline: Uploading generated pipeline"
-  #   tee /dev/stderr | buildkite-agent pipeline upload
-  # else
-    buildkite-agent pipeline upload
-  # fi
-}
-
 if is_debug ; then
   echo "--- :hammer: Enabling debug mode"
   env | sort | grep BUILDKITE_PLUGIN_GOLANG_BUILD
 fi
 
 # Config that applies to all targets
-default_pkg="buildkite.com/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-pkg="${BUILDKITE_PLUGIN_GOLANG_BUILD_PACKAGE:-$default_pkg}"
+default_import="buildkite.com/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+import="${BUILDKITE_PLUGIN_GOLANG_BUILD_IMPORT:-$default_import}"
 build="${BUILDKITE_PLUGIN_GOLANG_BUILD_BUILD:-main.go}"
-binary_prefix="${BUILDKITE_PLUGIN_GOLANG_BUILD_BIN_PREFIX:-$(basename "$pkg")}"
+binary_prefix="${BUILDKITE_PLUGIN_GOLANG_BUILD_BIN_PREFIX:-$(basename "$import")}"
 
-(
-echo "steps:"
+# Generate the pipeline yaml
+pipeline="$(
+  echo "steps:"
 
-# Iterate through targets specified in the plugin config
-for target in $(list_targets) ; do
-  target_version_prop="${target}_VERSION"
-  target_goos_prop="${target}_GOOS"
-  target_goarch_prop="${target}_GOARCH"
+  # Iterate through targets specified in the plugin config
+  for target in $(list_targets) ; do
+    target_version_prop="${target}_VERSION"
+    target_goos_prop="${target}_GOOS"
+    target_goarch_prop="${target}_GOARCH"
 
-  target_version=${!target_version_prop}
-  target_goos=${!target_goos_prop:-linux}
-  target_goarch=${!target_goarch_prop:-amd64}
+    target_version=${!target_version_prop}
+    target_goos=${!target_goos_prop:-linux}
+    target_goarch=${!target_goarch_prop:-amd64}
 
-  env=("GOOS=${target_goos}" "GOARCH=${target_goarch}")
+    env=("GOOS=${target_goos}" "GOARCH=${target_goarch}")
 
-  # Write out the start of a step
-  cat <<YAML
+    cat <<YAML
   - name: ":go: ${target_goos}/${target_goarch}"
     command: go build -v -o '${binary_prefix}-${target_goos}-${target_goarch}' '${build}'
     plugins:
       golang#${GOLANG_PLUGIN_VERSION}:
-        package: ${pkg}
+        import: ${import}
         version: ${target_version}
         environment:
 YAML
 
-  # Add environment vars
-  for env in "${env[@]}" ; do
-    echo "          - $env"
+    for env in "${env[@]}" ; do
+      echo "          - $env"
+    done
   done
-done
-) | buildkite-agent pipeline upload
+)"
 
-# goos="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOOS:-linux}"
-# goarch="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOARCH:-amd64}"
-# go_version="${BUILDKITE_PLUGIN_GOLANG_BUILD_GOLANG_VERSION:-latest}"
+if is_debug ; then
+  echo "--- :pipeline: Uploading generated pipeline"
+  echo "$pipeline"
+fi
 
-# # TODO: Support a list here
-# source_files=("")
-
-# default_pkg="buildkite.com/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-# pkg="${BUILDKITE_PLUGIN_GOLANG_BUILD_PACKAGE:-$default_pkg}"
-
-# output_name=$(dirname "$(cd "$(dirname "${source_files[0]}")"; pwd)")
-# build_file="build/${output_name}-${goos}-${goarch}"
-
-# go_args=("-o" "$build_file" "-v" "${source_files[@]}")
-
-# rm -rf build/
-# mkdir -p build/
-
-# echo "+++ Building ${output_name} for ${goos}/${goarch} with golang:${go_version} :golang:"
-# go_build_in_docker "$go_version" "$pkg" "$goos" "$goarch" "${go_args[@]}"
-
-# echo "~~~ Uploading artifacts"
-# buildkite-agent artifact upload "${build_file}"
+buildkite-agent pipeline upload <<< "$pipeline"
