@@ -16,15 +16,20 @@ steps:
         id: golang-cross-compile
 
   - wait
-  - label: run a test build
+  - label: run example 1
     plugins:
       ${BUILDKITE_REPO}#${BUILDKITE_COMMIT}:
         debug: true
-        build: ./tests/main.go
+        build: ./tests/helloworld
+        import: github.com/buildkite/example
         targets:
           - version: 1.10.2
             goos: linux
             goarch: amd64
+          - version: 1.10.2
+            goos: android
+            goarch: arm
+            goarm: 7
           - version: 1.10.2
             goos: windows
             goarch: amd64

@@ -15,11 +15,15 @@ steps:
   - plugins:
       - golang-cross-compile#v1.0.0:
           build: main.go
-          import: github.com/buildkite/github-release
+          import: github.com/buildkite/example
           targets:
             - version: 1.10.2
               goos: linux
               goarch: amd64
+            - version: 1.10.2
+              goos: android
+              goarch: arm
+              goarm: 7
             - version: 1.10.2
               goos: windows
               goarch: amd64
@@ -28,6 +32,23 @@ steps:
               goarch: amd64
 ```
 
+## Configuration
+
+### `build` (optional)
+
+The golang file to build. Can either be a relative package like `./cmd/helloworld` or a path to a file like `cli/main.go`. Defaults to `main.go`
+
+Example: `1.10.2`
+
+### `import`(required)
+
+The golang package to use in the gopath in the container.
+
+Exmaple: `github.com/buildkite/agent`
+
+### `targets` (required)
+
+A list of targets to run in parallel. See examples for syntax.
 
 ## License
 
