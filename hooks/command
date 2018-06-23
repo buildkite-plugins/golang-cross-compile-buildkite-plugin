@@ -17,36 +17,29 @@ list_targets() {
   done < <(env | sort) | uniq
 }
 
-if is_debug ; then
-  echo "--- :hammer: Enabling debug mode"
-  env | sort | grep BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE
-fi
-
-# Config that applies to all targets
-default_import="buildkite.com/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
-import="${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_IMPORT:-$default_import}"
-build="${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_BUILD:-main.go}"
-binary_prefix="${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_BIN_PREFIX:-$(basename "$import")}"
-
-# Generate the pipeline yaml
-pipeline="$(
+generate_pipeline() {
   echo "steps:"
 
   # Iterate through targets specified in the plugin config
   for target in $(list_targets) ; do
-    target_version_prop="${target}_VERSION"
-    target_goos_prop="${target}_GOOS"
-    target_goarch_prop="${target}_GOARCH"
+    local target_version_prop="${target}_VERSION"
+    local target_goos_prop="${target}_GOOS"
+    local target_goarch_prop="${target}_GOARCH"
 
-    target_version=${!target_version_prop}
-    target_goos=${!target_goos_prop:-linux}
-    target_goarch=${!target_goarch_prop:-amd64}
+    local target_version=${!target_version_prop}
+    local target_goos=${!target_goos_prop:-}
+    local target_goarch=${!target_goarch_prop:-}
 
-    env=("GOOS=${target_goos}" "GOARCH=${target_goarch}")
-    artifact_path="${binary_prefix}-${target_goos}-${target_goarch}"
+    if is_debug ; then
+      echo "Found target $target $target_version $target_goos $target_goarch" >&2
+    fi
+
+    local env=("GOOS=${target_goos}" "GOARCH=${target_goarch}")
+    local artifact_path="${binary_prefix}-${target_goos}-${target_goarch}"
+    local label=":go: ${target_version} :${target_goos}: ${target_goarch}"
 
     cat <<YAML
-  - name: ":go: ${target_goos}/${target_goarch}"
+  - name: "${label}"
     command: go build -v -o '${artifact_path}' '${build}'
     artifact_paths:
       - "${artifact_path}"
@@ -61,7 +54,20 @@ YAML
       echo "          - $env"
     done
   done
-)"
+}
+
+if is_debug ; then
+  echo "--- :hammer: Enabling debug mode"
+  env | sort | grep BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE
+fi
+
+# Config that applies to all targets
+default_import="buildkite.com/${BUILDKITE_ORGANIZATION_SLUG}/${BUILDKITE_PIPELINE_SLUG}"
+import="${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_IMPORT:-$default_import}"
+build="${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_BUILD:-main.go}"
+binary_prefix="${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_BIN_PREFIX:-$(basename "$import")}"
+
+pipeline="$(generate_pipeline)"
 
 if is_debug ; then
   echo "--- :pipeline: Uploading generated pipeline"
