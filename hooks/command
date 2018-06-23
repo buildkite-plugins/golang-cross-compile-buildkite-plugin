@@ -46,7 +46,7 @@ generate_pipeline() {
 
     if [[ "${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_STATIC:-false}" =~ ^(true|on|1)$ ]] ; then
       env+=("CGO_ENABLED=0")
-      build_args+=("-ldflags" "'-d'" "-tags" "netgo" "-installsuffix" "netgo")
+      build_args+=("-a" "-ldflags" "'-d -s -w'" "-tags" "netgo" "-installsuffix" "netgo")
     fi
 
     cat <<YAML

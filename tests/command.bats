@@ -112,7 +112,7 @@ YAML
   expected_yaml=$(cat <<YAML
 steps:
   - name: ":go: 1.10.1 :linux: amd64"
-    command: go build -v -o 'buildkite-agent-linux-amd64' -ldflags '-d' -tags netgo -installsuffix netgo 'main.go'
+    command: go build -v -o 'buildkite-agent-linux-amd64' -a -ldflags '-d -s -w' -tags netgo -installsuffix netgo 'main.go'
     artifact_paths:
       - "buildkite-agent-linux-amd64"
     plugins:
