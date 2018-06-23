@@ -42,6 +42,16 @@ The golang package to use in the gopath in the container.
 
 Exmaple: `github.com/buildkite/agent`
 
+### `bin-prefix`(optional)
+
+By default the basename of the import package is used for the binary name, use `bin-prefix` to specify a different one.
+
+Exmaple: `buildkite-agent`
+
+### `static`(optional)
+
+Create a statically compiled binary, useful for alpine docker images.
+
 ### `targets` (required)
 
 A list of targets to run in parallel. See examples for syntax.

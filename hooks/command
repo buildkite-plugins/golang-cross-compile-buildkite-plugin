@@ -4,7 +4,7 @@ set -euo pipefail
 readonly GOLANG_PLUGIN_VERSION="v2.0.0"
 
 is_debug() {
-  [[ "${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_DEBUG:-false}" =~ (true|on|1) ]]
+  [[ "${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_DEBUG:-false}" =~ ^(true|on|1)$ ]]
 }
 
 # Returns a list of env vars in the form of BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_TARGETS_N
@@ -38,9 +38,20 @@ generate_pipeline() {
     local artifact_path="${binary_prefix}-${target_goos}-${target_goarch}"
     local label=":go: ${target_version} :${target_goos}: ${target_goarch}"
 
+    if [[ "$target_goos" == "windows" ]]; then
+      artifact_path+=".exe"
+    fi
+
+    local build_args=("-v" "-o" "'${artifact_path}'")
+
+    if [[ "${BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_STATIC:-false}" =~ ^(true|on|1)$ ]] ; then
+      env+=("CGO_ENABLED=0")
+      build_args+=("-ldflags" "'-d'" "-tags" "netgo" "-installsuffix" "netgo")
+    fi
+
     cat <<YAML
   - name: "${label}"
-    command: go build -v -o '${artifact_path}' '${build}'
+    command: go build ${build_args[*]} '${build}'
     artifact_paths:
       - "${artifact_path}"
     plugins:
