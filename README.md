@@ -13,19 +13,22 @@ Build a golang binary across a set of architectures and versions.
 ```yml
 steps:
   - plugins:
-      golang-cross-compile#v1.2.0:
+      golang-cross-compile#v1.3.0:
         build: main.go
         import: github.com/buildkite/example
         targets:
-          - version: 1.10.2
+          - version: "1.11"
             goos: linux
             goarch: amd64
-          - version: 1.10.2
+            gomodule: on
+          - version: "1.11"
             goos: windows
             goarch: amd64
-          - version: 1.10.2
+            gomodule: on
+          - version: "1.11"
             goos: darwin
             goarch: amd64
+            gomodule: on
 ```
 
 ## Configuration
@@ -54,7 +57,7 @@ Create a statically compiled binary, useful for alpine docker images.
 
 ### `targets` (required)
 
-A list of targets to run in parallel. See examples for syntax.
+A list of targets to run in parallel. Each target can have a `version`, `goos`, `goarch` and `gomodule`.
 
 ## License
 
