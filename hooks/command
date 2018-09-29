@@ -25,12 +25,12 @@ generate_pipeline() {
     local target_version_prop="${target}_VERSION"
     local target_goos_prop="${target}_GOOS"
     local target_goarch_prop="${target}_GOARCH"
-    local target_modules_prop="${target}_MODULES"
+    local target_gomodule_prop="${target}_GOMODULE"
 
     local target_version=${!target_version_prop}
     local target_goos=${!target_goos_prop:-}
     local target_goarch=${!target_goarch_prop:-}
-    local target_modules=${!target_modules_prop:-}
+    local target_gomodule=${!target_gomodule_prop:-}
 
     if is_debug ; then
       echo "Found target $target $target_version $target_goos $target_goarch" >&2
@@ -44,8 +44,8 @@ generate_pipeline() {
       artifact_path+=".exe"
     fi
 
-    if [[ -n "$target_modules" ]] ; then
-      env+=("GO111MODULE=${target_modules}")
+    if [[ -n "$target_gomodule" ]] ; then
+      env+=("GO111MODULE=${target_gomodule}")
     fi
 
     local build_args=("-v" "-o" "'${artifact_path}'")

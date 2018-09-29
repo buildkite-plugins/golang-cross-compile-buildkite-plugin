@@ -22,5 +22,7 @@ configuration:
             type: string
           goarm:
             type: number
+          gomodule:
+            type: string
   required: []
   additionalProperties: false
