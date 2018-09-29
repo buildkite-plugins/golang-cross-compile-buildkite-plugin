@@ -13,11 +13,7 @@ Build a golang binary across a set of architectures and versions.
 ```yml
 steps:
   - plugins:
-<<<<<<< HEAD
-      golang-cross-compile#v1.2.0:
-=======
       golang-cross-compile#v1.3.0:
->>>>>>> 250683c... Rename "modules" to "gomodule" to better match env
         build: main.go
         import: github.com/buildkite/example
         targets:
