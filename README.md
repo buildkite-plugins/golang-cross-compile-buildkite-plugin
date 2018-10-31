@@ -20,15 +20,15 @@ steps:
           - version: "1.11"
             goos: linux
             goarch: amd64
-            gomodule: on
+            gomodule: "on"
           - version: "1.11"
             goos: windows
             goarch: amd64
-            gomodule: on
+            gomodule: "on"
           - version: "1.11"
             goos: darwin
             goarch: amd64
-            gomodule: on
+            gomodule: "on"
 ```
 
 ## Configuration
