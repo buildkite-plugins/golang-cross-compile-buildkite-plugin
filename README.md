@@ -1,4 +1,4 @@
-# Golang Cross Compile Buildkite Plugin
+# Golang Cross Compile Buildkite Plugin [![Build status](https://badge.buildkite.com/ffa65d9131a0e6ea354d16a61961ec147e2e51d3447413d0dc.svg?branch=master)](https://buildkite.com/buildkite/plugins-golang-cross-compile)
 
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) for building golang binaries against different operating systems, archictures and versions of golang.
 
