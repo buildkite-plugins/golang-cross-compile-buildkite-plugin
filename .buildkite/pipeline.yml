@@ -12,7 +12,7 @@ steps:
 
   - label: ":sparkles: Linter"
     plugins:
-      plugin-linter#v2.0.0:
+      plugin-linter#v3.0.0:
         id: golang-cross-compile
 
   - wait
