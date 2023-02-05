@@ -28,7 +28,7 @@ steps:
     plugins:
       golang#v2.0.0:
         import: buildkite.com/buildkite/agent
-        version: 1.10.1
+        version: "1.10.1"
         environment:
           - GOOS=linux
           - GOARCH=amd64
@@ -39,7 +39,7 @@ steps:
     plugins:
       golang#v2.0.0:
         import: buildkite.com/buildkite/agent
-        version: 1.10.2
+        version: "1.10.2"
         environment:
           - GOOS=darwin
           - GOARCH=386
@@ -78,7 +78,7 @@ steps:
     plugins:
       golang#v2.0.0:
         import: buildkite.com/buildkite/agent
-        version: 1.10.1
+        version: "1.10.1"
         environment:
           - GOOS=windows
           - GOARCH=amd64
@@ -118,7 +118,7 @@ steps:
     plugins:
       golang#v2.0.0:
         import: buildkite.com/buildkite/agent
-        version: 1.10.1
+        version: "1.10.1"
         environment:
           - GOOS=linux
           - GOARCH=amd64
@@ -159,7 +159,7 @@ steps:
     plugins:
       golang#v2.0.0:
         import: buildkite.com/buildkite/agent
-        version: 1.10.1
+        version: "1.10.1"
         environment:
           - GOOS=linux
           - GOARCH=amd64

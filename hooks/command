@@ -63,7 +63,7 @@ generate_pipeline() {
     plugins:
       golang#${GOLANG_PLUGIN_VERSION}:
         import: ${import}
-        version: ${target_version}
+        version: "${target_version}"
         environment:
 YAML
 
