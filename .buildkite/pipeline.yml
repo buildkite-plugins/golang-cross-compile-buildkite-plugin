@@ -21,18 +21,14 @@ steps:
       ${BUILDKITE_REPO}#${BUILDKITE_COMMIT}:
         debug: true
         build: ./tests/helloworld
-        import: github.com/buildkite/example
+        import: github.com/buildkite-plugins/golang-cross-compile-buildkite-plugin
         targets:
-          - version: 1.10.2
+          - version: "1.20"
             goos: linux
             goarch: amd64
-          - version: 1.10.2
+          - version: "1.20"
             goos: windows
             goarch: amd64
-          - version: 1.10.2
+          - version: "1.20"
             goos: darwin
             goarch: amd64
-
-
-
-
