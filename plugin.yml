@@ -24,5 +24,7 @@ configuration:
             type: number
           gomodule:
             type: string
+          buildvcs:
+            type: boolean
   required: []
   additionalProperties: false

@@ -57,7 +57,9 @@ Create a statically compiled binary, useful for alpine docker images.
 
 ### `targets` (required)
 
-A list of targets to run in parallel. Each target can have a `version`, `goos`, `goarch` and `gomodule`.
+A list of targets to run in parallel. Each target can have a `version`, `goos`, `goarch`, `gomodule`, and `buildvcs`.
+
+Set `buildvcs: false` on targets using Go 1.18 or newer to disable embedding version-control metadata in the binary. This can be useful when the checkout's Git object database is not available inside the build container. Only `false` changes the generated command; `true` is equivalent to omitting the setting. Do not set this option for older Go versions, which do not support the `-buildvcs` flag.
 
 ## License
 

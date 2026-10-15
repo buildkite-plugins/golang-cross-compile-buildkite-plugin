@@ -97,6 +97,45 @@ YAML
   unstub buildkite-agent
 }
 
+@test "Disabling VCS stamping for a target" {
+  export BUILDKITE_ORGANIZATION_SLUG="buildkite"
+  export BUILDKITE_PIPELINE_SLUG="agent"
+  export BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_DEBUG=true
+  export BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_BUILD="main.go"
+  export BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_PACKAGE="github.com/buildkite/agent"
+  export BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_BIN_PREFIX="buildkite-agent"
+  export BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_TARGETS_0_VERSION="1.20"
+  export BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_TARGETS_0_GOOS="linux"
+  export BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_TARGETS_0_GOARCH="amd64"
+  export BUILDKITE_PLUGIN_GOLANG_CROSS_COMPILE_TARGETS_0_BUILDVCS="false"
+
+  expected_yaml=$(cat <<YAML
+steps:
+  - name: ":go: 1.20 :linux: amd64"
+    command: go build -v -o 'buildkite-agent-linux-amd64' -buildvcs=false 'main.go'
+    artifact_paths:
+      - "buildkite-agent-linux-amd64"
+    plugins:
+      golang#v2.0.0:
+        import: buildkite.com/buildkite/agent
+        version: "1.20"
+        environment:
+          - GOOS=linux
+          - GOARCH=amd64
+YAML
+  )
+
+  stub buildkite-agent \
+    "pipeline upload : exit 0"
+
+  run "$PWD/hooks/command"
+
+  assert_success
+  assert_output --partial "$expected_yaml"
+
+  unstub buildkite-agent
+}
+
 @test "Running static build" {
   export BUILDKITE_ORGANIZATION_SLUG="buildkite"
   export BUILDKITE_PIPELINE_SLUG="agent"
